@@ -20,10 +20,7 @@ let timeUpdate = null;
 refs.startButton.setAttribute('disabled', 'disabled');
 
 const onClick = () => {
-  refs.days.textContent = timeLeftConverted.days;
-  refs.hours.textContent = timeLeftConverted.hours;
-  refs.minutes.textContent = timeLeftConverted.minutes;
-  refs.seconds.textContent = timeLeftConverted.seconds;
+  approptiation();
 
   timeUpdate = setInterval(() => {
     if (timeLeft >= 1000) {
