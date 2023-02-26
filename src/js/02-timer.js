@@ -22,10 +22,10 @@ refs.startButton.setAttribute('disabled', 'disabled');
 const onClick = () => {
   approptiation();
 
+  timeLeft = timeLeft - 1000;
+  
   timeUpdate = setInterval(() => {
     if (timeLeft >= 1000) {
-      timeLeft = timeLeft - 1000;
-
       approptiation();
     } else {
       timeLeft = timeLeft - timeLeft;
@@ -35,12 +35,12 @@ const onClick = () => {
 };
 
 function approptiation() {
-  ({ days, hours, minutes, seconds } = convertMs(timeLeft));
+  const { days, hours, minutes, seconds } = convertMs(timeLeft);
 
-  refs.days.textContent = days;
-  refs.hours.textContent = hours;
-  refs.minutes.textContent = minutes;
-  refs.seconds.textContent = seconds;
+  refs.days.textContent = addLeadingZero(days);
+  refs.hours.textContent = addLeadingZero(hours);
+  refs.minutes.textContent = addLeadingZero(minutes);
+  refs.seconds.textContent = addLeadingZero(seconds);
 }
 
 const options = {
@@ -48,16 +48,16 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    if (selectedDates[0].getTime() - options.defaultDate.getTime() < 0) {
+  onClose([selectedDate] = selectedDates) {
+    if (selectedDate.getTime() - Date.now() <= 0) {
+      refs.startButton.setAttribute('disabled', 'disabled');
       return Notiflix.Notify.failure('Please choose a date in the future');
     }
 
+    refs.startButton.addEventListener('click', onClick);
     refs.startButton.removeAttribute('disabled');
 
-    timeLeft = selectedDates[0].getTime() - options.defaultDate.getTime();
-
-    timeLeftConverted = convertMs(timeLeft);
+    timeLeft = selectedDate.getTime() - options.defaultDate.getTime();
   },
 };
 
@@ -73,18 +73,14 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = addLeadingZero(Math.floor(ms / day));
+  const days = Math.floor(ms / day);
   // Remaining hours
-  const hours = addLeadingZero(Math.floor((ms % day) / hour));
+  const hours = Math.floor((ms % day) / hour);
   // Remaining minutes
-  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
+  const minutes = Math.floor(((ms % day) % hour) / minute);
   // Remaining seconds
-  const seconds = addLeadingZero(
-    Math.floor((((ms % day) % hour) % minute) / second)
-  );
-
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
   return { days, hours, minutes, seconds };
 }
 
 const fp = flatpickr(refs.input, options);
-refs.startButton.addEventListener('click', onClick);

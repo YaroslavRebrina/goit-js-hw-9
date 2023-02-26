@@ -24,8 +24,14 @@ function createPromise(position, delay) {
         reject({ position, delay });
       }
     });
+  }, delay);
+}
 
-    promise
+function onSubmit(e) {
+  e.preventDefault();
+
+  for (let i = 1; i <= data.amount; i += 1) {
+    createPromise(i, Number(data.delay) + Number(data.step) * i)
       .then(({ position, delay }) => {
         Notiflix.Notify.success(
           `✅ Fulfilled promise ${position} in ${delay}ms`
@@ -36,13 +42,5 @@ function createPromise(position, delay) {
           `❌ Rejected promise ${position} in ${delay}ms`
         );
       });
-  }, delay);
-}
-
-function onSubmit(e) {
-  e.preventDefault();
-
-  for (let i = 1; i <= data.amount; i += 1) {
-    createPromise(i, Number(data.delay) + Number(data.step) * i);
   }
 }
