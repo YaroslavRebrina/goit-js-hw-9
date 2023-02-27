@@ -22,13 +22,13 @@ refs.startButton.setAttribute('disabled', 'disabled');
 const onClick = () => {
   approptiation();
 
-  timeLeft = timeLeft - 1000;
-  
   timeUpdate = setInterval(() => {
-    if (timeLeft >= 1000) {
+    timeLeft = timeLeft - 1000;
+    if (timeLeft > 1000) {
       approptiation();
     } else {
       timeLeft = timeLeft - timeLeft;
+      approptiation();
       clearInterval(timeUpdate);
     }
   }, 1000);
